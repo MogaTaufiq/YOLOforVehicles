@@ -1,33 +1,60 @@
+import torch
 from ultralytics import YOLO
 from PIL import Image
+import os
+
+cuda_available = torch.cuda.is_available()
+print(f"CUDA tersedia: {cuda_available}")
+
+if cuda_available:
+    device_to_use = 'cuda'
+    try:
+        print(f"Nama GPU: {torch.cuda.get_device_name(0)}")
+    except Exception as e:
+        print(f"Tidak dapat mengambil nama GPU: {e}")
+else:
+    device_to_use = 'cpu'
+    print("Menggunakan CPU.")
+
+print(f"Device yang digunakan: {device_to_use}")
 
 
-# Muat model pre-trained YOLOv8
-model = YOLO('yolov8m.pt')  # Atau 'yolov8m.pt' atau 'yolov8l.pt' jika kamu ingin model yang lebih besar
+model = YOLO('yolov8m.pt')
 
-# Tentukan path ke file konfigurasi dataset
-dataset_config = './vehicle.yaml'  # Gantilah dengan path ke file .yaml yang sudah kamu buat
+dataset_config = './vehicle.yaml'
 
-# Fine-tuning model
+print("Memulai training...")
 model.train(
-    data=dataset_config,  # Path ke file .yaml yang berisi konfigurasi dataset
-    epochs=50,            # Jumlah epoch pelatihan (kamu bisa sesuaikan)
-    imgsz=640,            # Ukuran gambar (misalnya 640x640)
-    batch=16,             # Ukuran batch
-    device='cpu'             # Gunakan GPU (ganti 'cpu' jika tidak ada GPU)
+    data=dataset_config,
+    epochs=50,
+    imgsz=640,
+    batch=16,
+    device=device_to_use
 )
+print("Training selesai.")
 
-# Evaluasi model
-model.val()
+print("Memulai validasi...")
+model.val(device=device_to_use)
+print("Validasi selesai.")
 
-# Muat model yang sudah dilatih
-model = YOLO('runs/train/exp/weights/best.pt')  # Gantilah dengan path ke model hasil pelatihan
+trained_model_path = 'runs/train/exp/weights/best.pt'
+if not os.path.exists(trained_model_path):
+    print(f"Error: Model tidak ditemukan di {trained_model_path}")
+else:
+    print(f"Memuat model dari: {trained_model_path}")
+    model = YOLO(trained_model_path)
 
-# Muat gambar untuk deteksi
-img = Image.open('path/to/test/image.jpg')
+    test_image_path = 'path/to/test/image.jpg'
+    if not os.path.exists(test_image_path):
+         print(f"Error: Gambar uji tidak ditemukan di {test_image_path}")
+    else:
+        img = Image.open(test_image_path)
 
-# Lakukan deteksi
-results = model(img)
+        print(f"Melakukan deteksi pada {test_image_path} menggunakan device: {device_to_use}")
+        results = model(img, device=device_to_use)
+        print("Deteksi selesai.")
 
-# Tampilkan hasil deteksi
-results.show()
+        print("Menampilkan hasil deteksi...")
+        results[0].show()
+
+print("Program selesai.")
