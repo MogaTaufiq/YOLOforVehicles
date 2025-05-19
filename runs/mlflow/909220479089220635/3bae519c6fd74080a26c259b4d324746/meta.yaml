@@ -1,0 +1,16 @@
+artifact_uri: /Users/MogaTaufiq/iCloud Drive (Archive)/Documents/Documents - Moga's
+  Book/College/SEM 6/CapsPro/FineTuneYOLO/runs/mlflow/909220479089220635/3bae519c6fd74080a26c259b4d324746/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '909220479089220635'
+lifecycle_stage: active
+run_id: 3bae519c6fd74080a26c259b4d324746
+run_name: train
+run_uuid: 3bae519c6fd74080a26c259b4d324746
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1747576305459
+status: 1
+tags: []
+user_id: MogaTaufiq

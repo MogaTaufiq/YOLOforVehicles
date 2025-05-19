@@ -1,0 +1,4 @@
+train: ./dataset/train/images
+val: ./dataset/valid/images
+nc: 6 # Jumlah kelas
+names: ["car", "motorbike", "threewheel", "van", "bus", "truck"]
